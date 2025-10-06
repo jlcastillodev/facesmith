@@ -1,0 +1,23 @@
+{
+  "name": "facesmith",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.17",
+    "pnpm": ">=8"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @facesmith/site dev",
+    "build": "pnpm --filter @facesmith/site build",
+    "preview": "pnpm --filter @facesmith/site preview",
+    "test": "pnpm --filter @facesmith/site test",
+    "check": "pnpm --filter @facesmith/site check",
+    "dev:worker": "pnpm --filter @facesmith/proxy-worker dev",
+    "deploy:worker": "pnpm --filter @facesmith/proxy-worker deploy",
+    "check-node": "./check-node-version.sh"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.4"
+  }
+}

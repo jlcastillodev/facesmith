@@ -5,4 +5,4 @@ export {
   isPromptSafe,
   rewritePrompt,
   type SafetyResult,
-} from '@core/safety';
+} from '@facesmith/core';

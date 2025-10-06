@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/apps/site"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    allow:
+      - dependency-type: "direct"
+    reviewers:
+      - "facesmith-maintainers"
+  - package-ecosystem: "npm"
+    directory: "/packages/core"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/workers/proxy"
+    schedule:
+      interval: "monthly"

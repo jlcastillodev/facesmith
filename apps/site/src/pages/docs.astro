@@ -1,0 +1,44 @@
+---
+import '../styles/tailwind.css';
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FaceSmith Documentation</title>
+  </head>
+  <body class="min-h-screen bg-surface px-4 py-10 text-foreground dark:bg-surface-dark dark:text-foreground-dark">
+    <main class="mx-auto max-w-3xl prose prose-slate dark:prose-invert">
+      <h1>FaceSmith documentation</h1>
+      <p>
+        FaceSmith is an open-source starter for building IP-safe AI avatar generators. This documentation outlines the
+        architectural decisions, testing strategy, and roadmap for integrating external inference providers.
+      </p>
+      <h2>Architecture</h2>
+      <ul>
+        <li><strong>Astro</strong> for static site generation and GitHub Pages deployments.</li>
+        <li><strong>React islands</strong> for interactive prompt tuning and theming.</li>
+        <li><strong>TypeScript-first</strong> utilities co-located in <code>src/lib</code> and re-exported via <code>packages/core</code>.</li>
+      </ul>
+      <h2>Security</h2>
+      <p>
+        Prompt inputs flow through <code>cleanPrompt</code>, removing blocklisted entities and rewriting them to generic descriptors.
+        Review <a href="https://github.com/facesmith/facesmith/blob/main/docs/SECURITY.md">docs/SECURITY.md</a> for the latest threat model and guidance.
+      </p>
+      <h2>Testing</h2>
+      <p>
+        Jest with Testing Library covers the theme toggle, prompt sanitization, and UI feedback. Run tests with <code>pnpm test</code>.
+      </p>
+      <h2>Extending</h2>
+      <ol>
+        <li>Add new prompt categories in <code>src/lib/prompts/categories.ts</code> and mirror them in <code>packages/core</code>.</li>
+        <li>Implement API calls inside <code>packages/core</code> or <code>workers/proxy</code> while keeping secrets off the client.</li>
+        <li>Document new capabilities in this page and <code>docs/SECURITY.md</code>.</li>
+      </ol>
+      <p>
+        Need deeper automation? Read <code>docs/AGENTS.md</code> for contributor prompts and guardrails.
+      </p>
+    </main>
+  </body>
+</html>

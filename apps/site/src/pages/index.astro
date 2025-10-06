@@ -1,0 +1,67 @@
+---
+import '../styles/tailwind.css';
+import ThemeToggle from '@/components/ThemeToggle';
+import { PromptTuner } from '@/components/PromptTuner';
+import { CATEGORIES } from '@/lib/prompts/categories';
+---
+<!DOCTYPE html>
+<html lang="en" class="bg-surface text-foreground" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FaceSmith — Forge your identity</title>
+    <meta
+      name="description"
+      content="Open-source, IP-safe avatar generator starter with Astro, Tailwind, and TypeScript."
+    />
+    <script is:inline>
+      (() => {
+        try {
+          const storedTheme = localStorage.getItem('facesmith.theme');
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = storedTheme === 'dark' || (!storedTheme && prefersDark) ? 'dark' : 'light';
+          document.documentElement.dataset.theme = theme;
+          document.body?.setAttribute('data-theme', theme);
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.body?.classList.toggle('dark', theme === 'dark');
+        } catch (error) {
+          console.warn('Unable to apply persisted theme', error);
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-surface text-foreground transition-colors dark:bg-surface-dark dark:text-foreground-dark">
+    <header class="border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-6">
+        <div>
+          <h1 class="font-display text-2xl font-semibold text-slate-900 dark:text-slate-100">FaceSmith</h1>
+          <p class="text-sm text-slate-600 dark:text-slate-300">
+            Forge IP-safe AI avatars with confidence.
+          </p>
+        </div>
+        <ThemeToggle client:load />
+      </div>
+    </header>
+    <main class="mx-auto flex max-w-5xl flex-col gap-10 px-4 py-10">
+      <section class="flex flex-col gap-4">
+        <h2 class="font-display text-xl text-slate-900 dark:text-slate-100">Prototype your avatar prompts</h2>
+        <p class="text-slate-600 dark:text-slate-300">
+          FaceSmith keeps prompts IP-safe by blocking trademarked entities and rewriting your inputs. Start experimenting
+          with safe avatar directions before connecting your preferred AI engine.
+        </p>
+      </section>
+      <PromptTuner client:load categories={CATEGORIES} />
+      <section class="prose prose-slate dark:prose-invert">
+        <h3>Why FaceSmith?</h3>
+        <ul>
+          <li>IP guardrails with blocklist enforcement and prompt rewriting.</li>
+          <li>Production-ready stack: Astro, React islands, Tailwind, TypeScript.</li>
+          <li>Tested with Jest and deployed automatically to GitHub Pages.</li>
+        </ul>
+      </section>
+    </main>
+    <footer class="border-t border-slate-200 bg-white py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+      Built with ❤️ for secure creativity. <a href="/docs">Read the docs</a>.
+    </footer>
+  </body>
+</html>

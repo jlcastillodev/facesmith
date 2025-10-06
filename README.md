@@ -1,2 +1,9 @@
-# facesmith
-FaceSmith is an open-source project to generate unique AI-powered avatars from safe prompts. It comes with a minimal UI, dark/light mode, and is fully deployable on GitHub Pages.
+# FaceSmith — Forge your identity
+Open-source, IP-safe avatar generator. Minimal Astro + Tailwind + TypeScript app with dark/light mode, Jest tests, and GitHub Pages deployment.
+
+## Quick start
+```bash
+cd apps/site
+pnpm install
+pnpm dev
+```

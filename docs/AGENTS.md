@@ -26,3 +26,8 @@ Welcome to the FaceSmith monorepo. Please follow these conventions whenever you 
 ## Documentation
 - Update `docs/SECURITY.md` if you change threat modeling, CSP directives, or safety logic.
 - Keep README quick-start steps accurate for new contributors.
+
+## Add AI engine integration
+- Edit only the Cloudflare Worker under `workers/proxy` and the client helper in `apps/site/src/lib/generate.ts`.
+- Keep placeholder fallbacks so the site works without external credentials.
+- Never commit real API tokens; use environment variables and Wrangler secrets for deployment.

@@ -1,4 +1,4 @@
-import { useMemo, useState, type FC } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
 import { CATEGORIES, type PromptCategory } from '@/lib/prompts/categories';
 import { buildGenerationPlan } from '@/lib/generate';
 import { downloadDataUrl } from '@/lib/download';
@@ -20,10 +20,35 @@ export const PromptTuner: FC<PromptTunerProps> = ({
   const [promptInput, setPromptInput] = useState(defaultPrompt);
 
   const plan = useMemo(() => buildGenerationPlan(promptInput, categoryId), [promptInput, categoryId]);
+  const avatars = useMemo(
+    () => [
+      {
+        filename: 'avatar-1.png',
+        dataUrl: plan.placeholderImage,
+      },
+    ],
+    [plan.placeholderImage],
+  );
 
-  const handleDownload = async () => {
-    await downloadDataUrl(plan.placeholderImage, `${plan.category.id}-${plan.safePrompt}`);
-  };
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const event = new CustomEvent('facesmith:avatars-generated', {
+      detail: { avatars },
+    });
+    window.dispatchEvent(event);
+  }, [avatars]);
+
+  const handleDownload = useCallback(async () => {
+    const [first] = avatars;
+    if (!first) {
+      return;
+    }
+
+    await downloadDataUrl(first.dataUrl, first.filename);
+  }, [avatars]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[360px_1fr]">

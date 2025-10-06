@@ -60,3 +60,14 @@ Or install the required version:
 nvm install 18.17.0
 nvm use 18.17.0
 ```
+
+## Connect an AI engine (Cloudflare Workers AI)
+
+1. Configure the Worker by setting `AI_ACCOUNT_ID`, `AI_API_TOKEN`, and (optionally) `AI_MODEL` in `wrangler.toml`; default model is `@cf/black-forest-labs/flux-1-schnell` if omitted. Define `ORIGIN_ALLOW` as a comma-separated list of allowed origins and be sure to include `http://localhost:4321` for local development. Secrets such as `AI_API_TOKEN` should be stored with `wrangler secret put`.
+2. Deploy the proxy from `workers/proxy` using Wrangler (`pnpm --filter @facesmith/proxy-worker dev` for testing, `pnpm --filter @facesmith/proxy-worker deploy` to publish).
+3. Create `apps/site/.env.local` and set `PUBLIC_FACESMITH_API_URL="https://<your-worker-subdomain>/api"` pointing to the deployed Worker.
+4. Run `pnpm --filter site dev` and generate avatars. If the env variable is present the site will call the Worker and render returned images; otherwise the placeholder generator remains in use for offline demos.
+
+### Security notes
+
+Prompts are sanitized on the client before they reach the proxy. The Worker enforces CORS using `ORIGIN_ALLOW` and sets defensive headers; do not log prompts in production environments to preserve user privacy.

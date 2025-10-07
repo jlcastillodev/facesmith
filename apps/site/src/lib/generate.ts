@@ -107,11 +107,15 @@ export const generateAvatars = async (
   const placeholders = createPlaceholderBatch(plan, count);
   const apiUrl = getConfiguredApiUrl();
 
+  console.log('🎯 generateAvatars: Starting with config', { requestedCount, count, apiUrl });
+
   if (!apiUrl) {
+    console.log('❌ generateAvatars: No API URL configured, using placeholders');
     return { images: placeholders, usedProxy: false };
   }
 
   try {
+    console.log('📡 generateAvatars: Making request to API');
     const response = await fetch(`${normaliseApiUrl(apiUrl)}/generate`, {
       method: 'POST',
       headers: {
@@ -121,23 +125,42 @@ export const generateAvatars = async (
       body: JSON.stringify({ prompt: plan.safePrompt, n: count }),
     });
 
+    console.log('📨 generateAvatars: Response received', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries()),
+    });
+
     if (!response.ok) {
-      showFallbackToast();
-      return { images: placeholders, usedProxy: false };
+      const errorText = await response.text();
+      console.error('❌ generateAvatars: API request failed', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+      });
+      
+      // For debugging, let's not fallback to placeholders
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
     }
 
     const payload = await response.json();
+    console.log('📦 generateAvatars: Parsed response payload', payload);
+    
     const images = normaliseImages(payload);
+    console.log('🖼️ generateAvatars: Normalized images', { count: images.length });
 
     if (!images.length) {
-      showFallbackToast();
-      return { images: placeholders, usedProxy: false };
+      console.error('❌ generateAvatars: No valid images in response');
+      throw new Error('No valid images in API response');
     }
 
+    console.log('✅ generateAvatars: Success!', { imageCount: images.length });
     return { images, usedProxy: true };
   } catch (error) {
-    showFallbackToast();
-    return { images: placeholders, usedProxy: false };
+    console.error('💥 generateAvatars: Error occurred', error);
+    
+    // For debugging, re-throw the error instead of falling back
+    throw error;
   }
 };
 

@@ -5,6 +5,7 @@ import { downloadDataUrl } from '@/lib/download';
 import { CategoryPicker } from './CategoryPicker';
 import { AvatarCard } from './AvatarCard';
 import { GeneratedGrid } from './GeneratedGrid';
+import { DownloadAll } from './DownloadAll';
 
 export interface PromptTunerProps {
   categories?: PromptCategory[];
@@ -86,6 +87,13 @@ export const PromptTuner: FC<PromptTunerProps> = ({
       return;
     }
 
+    // Use the DownloadAll component's functionality for zip download
+    const downloadItems = generatedImages.map((img, index) => ({
+      filename: `facesmith-${index + 1}.png`,
+      dataUrl: img
+    }));
+
+    // For now, download individual files (zip download will work via DownloadAll component)
     generatedImages.forEach((img, index) => {
       downloadDataUrl(img, `facesmith-${index + 1}.png`);
     });
@@ -136,11 +144,23 @@ export const PromptTuner: FC<PromptTunerProps> = ({
           statusMessage={statusMessage}
         />
         {generatedImages.length > 0 ? (
-          <GeneratedGrid
-            images={generatedImages}
-            onDownload={handleDownloadOne}
-            showDownloads={phase === 'ready'}
-          />
+          <>
+            <GeneratedGrid
+              images={generatedImages}
+              onDownload={handleDownloadOne}
+              showDownloads={phase === 'ready'}
+            />
+            {phase === 'ready' && (
+              <div className="flex justify-center">
+                <DownloadAll 
+                  items={generatedImages.map((img, index) => ({
+                    filename: `facesmith-${index + 1}.png`,
+                    dataUrl: img
+                  }))}
+                />
+              </div>
+            )}
+          </>
         ) : null}
       </div>
     </div>

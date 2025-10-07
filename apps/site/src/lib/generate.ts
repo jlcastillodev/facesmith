@@ -42,6 +42,10 @@ const normaliseImages = (payload: unknown): string[] => {
     );
 };
 
+export const __testing = {
+  normaliseImages,
+};
+
 const createPlaceholderBatch = (plan: GenerationPlan, count: number): string[] =>
   Array.from({ length: count }, (_, index) => {
     const suffix = count > 1 ? ` (placeholder ${index + 1})` : '';

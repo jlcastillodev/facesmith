@@ -19,6 +19,16 @@ pnpm install
 pnpm dev
 ```
 
+## Environment configuration
+
+Create `apps/site/.env.local` and set the Cloudflare Worker base URL. The frontend reads `PUBLIC_` variables only:
+
+```env
+PUBLIC_FACESMITH_API_URL="https://facesmith-proxy.<your-subdomain>.workers.dev"
+```
+
+Ensure your Worker `ORIGIN_ALLOW` (or equivalent CORS allow list) includes **both** `http://localhost:4321` for local development and `https://<your-pages-domain>` for production deployments.
+
 ## Project structure
 
 This is a monorepo with the following packages:
@@ -67,6 +77,14 @@ nvm use 18.17.0
 2. Deploy the proxy from `workers/proxy` using Wrangler (`pnpm --filter @facesmith/proxy-worker dev` for testing, `pnpm --filter @facesmith/proxy-worker deploy` to publish).
 3. Create `apps/site/.env.local` and set `PUBLIC_FACESMITH_API_URL="https://<your-worker-subdomain>/api"` pointing to the deployed Worker.
 4. Run `pnpm --filter site dev` and generate avatars. If the env variable is present the site will call the Worker and render returned images; otherwise the placeholder generator remains in use for offline demos.
+
+### Generate → Preview → Download flow
+
+- **Generate:** The primary action requests a batch of six avatars via the Worker proxy. The preview card shows a loading overlay, sets `aria-busy="true"`, and disables all controls until the request finishes.
+- **Preview:** On success the first returned data URL replaces the main preview image, and a thumbnail grid lists the entire batch with keyboard-focusable tiles announced as “Generated avatar #N”.
+- **Download:** Bulk and per-image download buttons appear only after a successful batch. Each button calls `downloadDataUrl` with the proxy-provided data URLs so users always download the real images, not placeholders.
+
+If generation fails, the placeholder image remains visible, the non-blocking toast appears, and all download controls stay hidden.
 
 ### Security notes
 

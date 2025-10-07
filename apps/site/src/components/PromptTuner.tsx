@@ -4,6 +4,7 @@ import { buildGenerationPlan, generateAvatars } from '@/lib/generate';
 import { downloadDataUrl } from '@/lib/download';
 import { CategoryPicker } from './CategoryPicker';
 import { AvatarCard } from './AvatarCard';
+import { GeneratedGrid } from './GeneratedGrid';
 
 export interface PromptTunerProps {
   categories?: PromptCategory[];
@@ -24,59 +25,83 @@ export const PromptTuner: FC<PromptTunerProps> = ({
 
   // preview image shown in the card (starts with placeholder, replaced if proxy succeeds)
   const [previewImage, setPreviewImage] = useState<string>(plan.placeholderImage);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const [phase, setPhase] = useState<'idle' | 'generating' | 'ready' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
 
-  // keep preview in sync when plan changes
+  const isGenerating = phase === 'generating';
+
+  // keep placeholder in sync when no successful batch exists
   useEffect(() => {
+    if (phase === 'ready' || generatedImages.length > 0) {
+      return;
+    }
+
     setPreviewImage(plan.placeholderImage);
-  }, [plan.placeholderImage]);
+    setStatusMessage('');
+  }, [generatedImages.length, phase, plan.placeholderImage]);
 
-  // broadcast whenever the preview changes (and/or when generations happen)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const event = new CustomEvent('facesmith:avatars-generated', {
-      detail: { avatars: [{ filename: 'avatar-1.png', dataUrl: previewImage }] },
-    });
-    window.dispatchEvent(event);
-  }, [previewImage]);
-
-  const handleDownload = useCallback(async () => {
-    setIsGenerating(true);
+  const handleGenerate = useCallback(async () => {
+    setPhase('generating');
+    setStatusMessage('Generating…');
     try {
-      // Ask the proxy for up to 6 images (respects internal max of 8)
       const result = await generateAvatars(plan, { count: 6 });
 
-      // If we got real images, update preview to the first one and download them
-      if (result.images.length > 0) {
+      if (result.usedProxy && result.images.length > 0) {
+        setGeneratedImages(result.images);
         setPreviewImage(result.images[0]);
+        setPhase('ready');
+        setStatusMessage(`${result.images.length} images generated.`);
 
-        // download all images returned by the proxy
-        result.images.forEach((img, i) => {
-          downloadDataUrl(img, `facesmith-${i + 1}.png`);
-        });
-
-        // also rebroadcast the generated batch
         if (typeof window !== 'undefined') {
           const event = new CustomEvent('facesmith:avatars-generated', {
             detail: {
-              avatars: result.images.map((img, i) => ({
+              avatars: result.images.map((dataUrl, i) => ({
                 filename: `facesmith-${i + 1}.png`,
-                dataUrl: img,
+                dataUrl,
               })),
               usedProxy: result.usedProxy,
             },
           });
           window.dispatchEvent(event);
         }
+
         return;
       }
 
-      // fallback: download the placeholder
-      downloadDataUrl(plan.placeholderImage, 'avatar-1.png');
-    } finally {
-      setIsGenerating(false);
+      setGeneratedImages([]);
+      setPreviewImage(plan.placeholderImage);
+      setPhase('error');
+      setStatusMessage('Generation failed. Showing placeholders.');
+    } catch (error) {
+      setGeneratedImages([]);
+      setPreviewImage(plan.placeholderImage);
+      setPhase('error');
+      setStatusMessage('Generation failed. Showing placeholders.');
     }
   }, [plan]);
+
+  const handleDownloadAll = useCallback(() => {
+    if (!generatedImages.length) {
+      return;
+    }
+
+    generatedImages.forEach((img, index) => {
+      downloadDataUrl(img, `facesmith-${index + 1}.png`);
+    });
+  }, [generatedImages]);
+
+  const handleDownloadOne = useCallback(
+    (index: number) => {
+      const image = generatedImages[index];
+      if (!image) {
+        return;
+      }
+
+      downloadDataUrl(image, `facesmith-${index + 1}.png`);
+    },
+    [generatedImages],
+  );
 
   return (
     <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
@@ -98,13 +123,26 @@ export const PromptTuner: FC<PromptTunerProps> = ({
         </p>
       </section>
 
-      <AvatarCard
-        image={previewImage}            // show generated image if available
-        prompt={plan.safePrompt}
-        category={plan.category}
-        flaggedTerms={plan.flaggedTerms}
-        onDownload={handleDownload}     // now triggers real generation + downloads
-      />
+      <div className="flex flex-col gap-4">
+        <AvatarCard
+          image={previewImage}
+          prompt={plan.safePrompt}
+          category={plan.category}
+          flaggedTerms={plan.flaggedTerms}
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+          loading={isGenerating}
+          statusMessage={statusMessage}
+        />
+        {generatedImages.length > 0 ? (
+          <GeneratedGrid
+            images={generatedImages}
+            onDownload={handleDownloadOne}
+            showDownloads={phase === 'ready'}
+          />
+        ) : null}
+      </div>
     </div>
   );
 };

@@ -20,7 +20,8 @@ facesmith/
 │     │  │  ├─ ThemeToggle.tsx
 │     │  │  ├─ CategoryPicker.tsx
 │     │  │  ├─ PromptTuner.tsx
-│     │  │  └─ AvatarCard.tsx
+│     │  │  ├─ AvatarCard.tsx
+│     │  │  └─ GeneratedGrid.tsx
 │     │  ├─ lib/
 │     │  │  ├─ safety/
 │     │  │  │  └─ ip-safety.ts
@@ -153,7 +154,19 @@ pnpm -F "*/site" test
 
 ---
 
-## 5) Pages & routing (Astro)
+## 5) Avatar generation UX (Generate → Preview → Download)
+
+The preview experience in FaceSmith follows an accessible two-step flow:
+
+1. **Generate** — triggers the Cloudflare Worker proxy via `generateAvatars(plan, { count: 6 })`. While pending the preview card shows a loading spinner, the surrounding region is marked `aria-busy="true"`, and controls are disabled.
+2. **Preview** — on success the first returned data URL populates the main preview image, and the gallery renders every image in the batch as keyboard-focusable thumbnails announced as “Generated avatar #N”. A polite live region informs screen readers (e.g. “6 images generated.”).
+3. **Download** — bulk and per-image download buttons appear only after a successful batch. They call `downloadDataUrl` with the generated data URLs, never the placeholder assets.
+
+Failures keep the placeholder preview, hide download controls, and surface the existing non-blocking toast. The preview from the last successful batch remains visible until a new batch completes.
+
+---
+
+## 6) Pages & routing (Astro)
 
 Each `.astro` file inside `src/pages/` becomes a route.
 
@@ -180,7 +193,7 @@ const title = "Hello Astro";
 
 ---
 
-## 6) Using React in Astro
+## 7) Using React in Astro
 
 You can include React components (`.tsx`) in Astro and control when to hydrate them:
 
@@ -199,7 +212,7 @@ import ThemeToggle from "../components/ThemeToggle.tsx";
 
 ---
 
-## 7) Styling (Tailwind)
+## 8) Styling (Tailwind)
 
 Configuration:
 - Entry file: `src/styles/tailwind.css`
@@ -223,7 +236,7 @@ export default {
 
 ---
 
-## 8) AI proxy (Cloudflare Worker)
+## 9) AI proxy (Cloudflare Worker)
 
 The Worker acts as a secure proxy for the Cloudflare AI API.  
 It exposes a `POST /generate` endpoint.
@@ -270,7 +283,7 @@ curl -X POST "https://facesmith-proxy.<your-subdomain>.workers.dev/generate" \
 
 ---
 
-## 9) Security posture
+## 10) Security posture
 
 Implemented for FaceSmith:
 
@@ -282,7 +295,7 @@ Implemented for FaceSmith:
 
 ---
 
-## 10) Debugging tips
+## 11) Debugging tips
 
 | Problem | Likely cause | Solution |
 |----------|--------------|-----------|
@@ -293,7 +306,7 @@ Implemented for FaceSmith:
 
 ---
 
-## 11) Common tasks
+## 12) Common tasks
 
 ```bash
 # Create a new page

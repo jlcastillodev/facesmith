@@ -51,6 +51,7 @@ import { CATEGORIES } from '@/lib/prompts/categories';
         </p>
       </section>
       <PromptTuner client:load categories={CATEGORIES} />
+      <div id="bulk" class="mt-4 hidden"></div>
       <section class="prose prose-slate dark:prose-invert">
         <h3>Why FaceSmith?</h3>
         <ul>
@@ -63,5 +64,98 @@ import { CATEGORIES } from '@/lib/prompts/categories';
     <footer class="border-t border-slate-200 bg-white py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
       Built with ❤️ for secure creativity. <a href="/docs">Read the docs</a>.
     </footer>
+    <script type="module">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import DownloadAll from '../components/DownloadAll.tsx';
+      import { downloadDataUrl } from '../lib/download.ts';
+
+      const globalWindow = window;
+      globalWindow.__zipItems = [];
+      globalWindow.__downloadDataUrl = downloadDataUrl;
+
+      const bulkContainer = document.getElementById('bulk');
+      let bulkRoot = null;
+      let activeToast = null;
+      let dismissTimer = 0;
+
+      const renderBulkButton = () => {
+        if (!bulkContainer) {
+          return;
+        }
+
+        if (!globalWindow.__zipItems.length) {
+          bulkContainer.classList.add('hidden');
+          if (bulkRoot) {
+            bulkRoot.unmount();
+            bulkRoot = null;
+          }
+          return;
+        }
+
+        bulkContainer.classList.remove('hidden');
+        if (!bulkRoot) {
+          bulkRoot = createRoot(bulkContainer);
+        }
+
+        bulkRoot.render(React.createElement(DownloadAll, { items: globalWindow.__zipItems }));
+      };
+
+      const showToast = (message) => {
+        if (!document.body) {
+          return;
+        }
+
+        if (activeToast) {
+          activeToast.remove();
+        }
+        if (dismissTimer) {
+          clearTimeout(dismissTimer);
+          dismissTimer = 0;
+        }
+
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.className = 'pointer-events-none fixed top-4 right-4 z-50 rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-lg transition-opacity duration-300 opacity-0';
+        document.body.appendChild(toast);
+
+        requestAnimationFrame(() => {
+          toast.classList.remove('opacity-0');
+          toast.classList.add('opacity-100');
+        });
+
+        dismissTimer = window.setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0');
+          window.setTimeout(() => {
+            toast.remove();
+          }, 300);
+        }, 2400);
+
+        activeToast = toast;
+      };
+
+      window.addEventListener('facesmith:avatars-generated', (event) => {
+        const detail = event.detail || {};
+        const avatars = Array.isArray(detail.avatars) ? detail.avatars : [];
+
+        globalWindow.__zipItems = avatars
+          .map((item, index) => ({
+            filename:
+              item && typeof item.filename === 'string' && item.filename
+                ? item.filename
+                : `avatar-${index + 1}.png`,
+            dataUrl: item && typeof item.dataUrl === 'string' ? item.dataUrl : '',
+          }))
+          .filter((item) => Boolean(item.dataUrl));
+
+        renderBulkButton();
+
+        if (globalWindow.__zipItems.length > 0) {
+          const count = globalWindow.__zipItems.length;
+          showToast(`Generated ${count} avatar${count === 1 ? '' : 's'}`);
+        }
+      });
+    </script>
   </body>
 </html>

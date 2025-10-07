@@ -19,9 +19,9 @@ export const AvatarCard: FC<AvatarCardProps> = ({ image, prompt, category, flagg
       <button
         type="button"
         onClick={onDownload}
-        className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+        className="rounded-md bg-blue-600 px-2 py-1 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
       >
-        Download SVG
+        Download
       </button>
     </div>
     <img

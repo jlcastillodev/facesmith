@@ -32,5 +32,15 @@ export default defineConfig({
     build: {
       target: 'esnext',
     },
+    optimizeDeps: {
+      include: ['file-saver', 'jszip'],
+      force: true
+    },
+    ssr: {
+      noExternal: ['file-saver']
+    },
+    define: {
+      global: 'globalThis',
+    }
   },
 });

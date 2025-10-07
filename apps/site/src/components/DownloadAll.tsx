@@ -1,6 +1,5 @@
 import { useCallback, type FC } from 'react';
 import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 
 export interface DownloadItem {
   filename: string;
@@ -18,6 +17,7 @@ export const DownloadAll: FC<DownloadAllProps> = ({ items }) => {
     }
 
     try {
+      const { saveAs } = await import('file-saver');
       const zip = new JSZip();
       items.forEach(({ filename, dataUrl }) => {
         const [, base64] = dataUrl.split(',');

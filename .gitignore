@@ -1,1 +1,55 @@
-node_modules
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.cache/
+.out/
+.next/
+.vercel/
+.netlify/
+astro.config.mjs.tsbuildinfo
+
+# Local environment files
+.env
+.env.*.local
+.env.local
+apps/site/.env.local
+
+# IDEs & OS junk
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+debug.log
+
+# Coverage & testing
+coverage/
+*.lcov
+
+# Lockfiles (only keep if needed)
+# Uncomment if you want deterministic installs:
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Misc
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# Output artifacts
+*.zip
+*.tar
+*.tgz

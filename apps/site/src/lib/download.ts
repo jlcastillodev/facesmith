@@ -1,5 +1,3 @@
-import { saveAs } from 'file-saver';
-
 const FALLBACK_FILENAME = 'facesmith-avatar.png';
 
 const sanitizeFileName = (value: string): string => {
@@ -39,6 +37,7 @@ export const downloadDataUrl = async (dataUrl: string, filename: string): Promis
   }
 
   try {
+    const { saveAs } = await import('file-saver');
     const response = await fetch(dataUrl);
     const blob = await response.blob();
     const safeName = sanitizeFileName(filename);

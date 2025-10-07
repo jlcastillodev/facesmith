@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
 import { CATEGORIES, type PromptCategory } from '@/lib/prompts/categories';
-import { buildGenerationPlan } from '@/lib/generate';
+import { buildGenerationPlan, generateAvatars } from '@/lib/generate';
 import { downloadDataUrl } from '@/lib/download';
 import { CategoryPicker } from './CategoryPicker';
 import { AvatarCard } from './AvatarCard';
@@ -19,36 +19,64 @@ export const PromptTuner: FC<PromptTunerProps> = ({
   const [categoryId, setCategoryId] = useState(defaultCategoryId);
   const [promptInput, setPromptInput] = useState(defaultPrompt);
 
+  // plan always reflects current form state
   const plan = useMemo(() => buildGenerationPlan(promptInput, categoryId), [promptInput, categoryId]);
-  const avatars = useMemo(
-    () => [
-      {
-        filename: 'avatar-1.png',
-        dataUrl: plan.placeholderImage,
-      },
-    ],
-    [plan.placeholderImage],
-  );
 
+  // preview image shown in the card (starts with placeholder, replaced if proxy succeeds)
+  const [previewImage, setPreviewImage] = useState<string>(plan.placeholderImage);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // keep preview in sync when plan changes
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
+    setPreviewImage(plan.placeholderImage);
+  }, [plan.placeholderImage]);
 
+  // broadcast whenever the preview changes (and/or when generations happen)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
     const event = new CustomEvent('facesmith:avatars-generated', {
-      detail: { avatars },
+      detail: { avatars: [{ filename: 'avatar-1.png', dataUrl: previewImage }] },
     });
     window.dispatchEvent(event);
-  }, [avatars]);
+  }, [previewImage]);
 
   const handleDownload = useCallback(async () => {
-    const [first] = avatars;
-    if (!first) {
-      return;
-    }
+    setIsGenerating(true);
+    try {
+      // Ask the proxy for up to 6 images (respects internal max of 8)
+      const result = await generateAvatars(plan, { count: 6 });
 
-    await downloadDataUrl(first.dataUrl, first.filename);
-  }, [avatars]);
+      // If we got real images, update preview to the first one and download them
+      if (result.images.length > 0) {
+        setPreviewImage(result.images[0]);
+
+        // download all images returned by the proxy
+        result.images.forEach((img, i) => {
+          downloadDataUrl(img, `facesmith-${i + 1}.png`);
+        });
+
+        // also rebroadcast the generated batch
+        if (typeof window !== 'undefined') {
+          const event = new CustomEvent('facesmith:avatars-generated', {
+            detail: {
+              avatars: result.images.map((img, i) => ({
+                filename: `facesmith-${i + 1}.png`,
+                dataUrl: img,
+              })),
+              usedProxy: result.usedProxy,
+            },
+          });
+          window.dispatchEvent(event);
+        }
+        return;
+      }
+
+      // fallback: download the placeholder
+      downloadDataUrl(plan.placeholderImage, 'avatar-1.png');
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [plan]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
@@ -69,12 +97,13 @@ export const PromptTuner: FC<PromptTunerProps> = ({
           Prompts are sanitized for IP safety. Any blocked references will be removed automatically before reaching an AI model.
         </p>
       </section>
+
       <AvatarCard
-        image={plan.placeholderImage}
+        image={previewImage}            // show generated image if available
         prompt={plan.safePrompt}
         category={plan.category}
         flaggedTerms={plan.flaggedTerms}
-        onDownload={handleDownload}
+        onDownload={handleDownload}     // now triggers real generation + downloads
       />
     </div>
   );

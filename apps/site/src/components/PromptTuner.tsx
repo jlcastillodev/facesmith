@@ -46,7 +46,7 @@ export const PromptTuner: FC<PromptTunerProps> = ({
     setPhase('generating');
     setStatusMessage('Generating…');
     try {
-      const result = await generateAvatars(plan, { count: 6 });
+      const result = await generateAvatars(plan, { count: 12 });
 
       if (result.usedProxy && result.images.length > 0) {
         setGeneratedImages(result.images);

@@ -18,7 +18,7 @@ export interface AvatarGenerationResult {
 }
 
 const DEFAULT_IMAGE_COUNT = 6;
-const MAX_PROXY_COUNT = 8;
+const MAX_IMAGE_COUNT = 20; // Maximum images we can generate
 
 const normaliseApiUrl = (value: string): string => value.replace(/\/+$/, '');
 
@@ -103,7 +103,7 @@ export const generateAvatars = async (
   options: AvatarGenerationOptions = {},
 ): Promise<AvatarGenerationResult> => {
   const requestedCount = Math.floor(options.count ?? DEFAULT_IMAGE_COUNT);
-  const count = Math.max(1, Math.min(MAX_PROXY_COUNT, requestedCount));
+  const count = Math.max(1, Math.min(MAX_IMAGE_COUNT, requestedCount)); // Clamp between 1 and 20
   const placeholders = createPlaceholderBatch(plan, count);
   const apiUrl = getConfiguredApiUrl();
 

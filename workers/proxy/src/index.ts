@@ -130,7 +130,7 @@ export default {
 
         // Generate images using Cloudflare AI
         const images = [];
-        const maxImages = Math.min(n, 6);
+        const maxImages = Math.min(n, 20); // Increased limit to 20 images
         
         for (let i = 0; i < maxImages; i++) {
           try {

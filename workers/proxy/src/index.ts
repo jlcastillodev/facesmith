@@ -103,7 +103,7 @@ export default {
         }
 
         const body = await request.json();
-        const { prompt, n = 1 } = body;
+        const { prompt, n = 1, size = 512 } = body;
         
         if (!prompt || typeof prompt !== 'string') {
           return new Response(
@@ -115,8 +115,13 @@ export default {
           );
         }
 
+        // Validate size parameter
+        const validSizes = [256, 512, 1024];
+        const imageSize = validSizes.includes(size) ? size : 512;
+
         console.log('📝 Worker: Generating images for prompt:', prompt);
         console.log('🔢 Worker: Requested count:', n);
+        console.log('📐 Worker: Image size:', imageSize);
 
         // Try different models based on availability
         const models = [
@@ -138,6 +143,8 @@ export default {
             
             const response = await env.AI.run(modelToUse, {
               prompt: prompt,
+              width: imageSize,
+              height: imageSize,
             });
 
             console.log(`🔍 Worker: Response for image ${i + 1}:`, {
@@ -219,6 +226,7 @@ export default {
             images,
             count: images.length,
             model: modelToUse,
+            size: imageSize,
             success: true
           }), 
           { 

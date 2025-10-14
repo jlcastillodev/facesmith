@@ -46,7 +46,7 @@ export const PromptTuner: FC<PromptTunerProps> = ({
     setPhase('generating');
     setStatusMessage('Generating…');
     try {
-      const result = await generateAvatars(plan, { count: 12 });
+      const result = await generateAvatars(plan, { count: 6, size: 512 });
 
       if (result.usedProxy && result.images.length > 0) {
         setGeneratedImages(result.images);
@@ -112,7 +112,7 @@ export const PromptTuner: FC<PromptTunerProps> = ({
   );
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+    <div className="grid gap-6 lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr]">
       <section className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h2 className="font-display text-lg text-slate-900 dark:text-slate-100">Prompt designer</h2>
         <CategoryPicker categories={categories} value={categoryId} onChange={setCategoryId} />

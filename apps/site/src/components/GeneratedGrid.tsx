@@ -17,7 +17,7 @@ export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, show
       aria-label="Generated avatars"
     >
       <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent avatars</h3>
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
         {images.map((image, index) => {
           const displayIndex = index + 1;
           return (
@@ -28,18 +28,20 @@ export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, show
               aria-label={`Generated avatar #${displayIndex}`}
               className="group relative overflow-hidden rounded-lg border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-slate-700 dark:focus-visible:ring-offset-slate-900"
             >
-              <img
-                src={image}
-                alt={`Generated avatar #${displayIndex}`}
-                className="h-32 w-full object-cover"
-                loading="lazy"
-              />
+              <div className="aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-800 cursor-pointer">
+                <img
+                  src={image}
+                  alt={`Generated avatar #${displayIndex}`}
+                  className="aspect-square w-full object-cover object-center transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+                  loading="lazy"
+                />
+              </div>
               {showDownloads ? (
                 <button
                   type="button"
                   aria-label={`Download avatar #${displayIndex}`}
                   onClick={() => onDownload(index)}
-                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-slate-900"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

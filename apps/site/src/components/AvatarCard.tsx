@@ -60,7 +60,7 @@ export const AvatarCard: FC<AvatarCardProps> = ({
       <img
         src={image}
         alt={`${category.label} avatar preview`}
-        className="h-64 w-full rounded-lg border border-slate-100 object-cover shadow-inner dark:border-slate-800"
+        className="aspect-square rounded-lg border border-slate-100 object-cover shadow-inner dark:border-slate-800"
         loading="lazy"
       />
       {loading ? (

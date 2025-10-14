@@ -30,7 +30,7 @@ import { CATEGORIES } from '@/lib/prompts/categories';
       })();
     </script>
   </head>
-  <body class="min-h-screen bg-surface text-foreground transition-colors dark:bg-surface-dark dark:text-foreground-dark">
+  <body class="min-h-screen flex flex-col bg-surface text-foreground transition-colors dark:bg-surface-dark dark:text-foreground-dark">
     <header class="border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
       <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-6">
         <div>
@@ -42,7 +42,7 @@ import { CATEGORIES } from '@/lib/prompts/categories';
         <ThemeToggle client:load />
       </div>
     </header>
-    <main class="mx-auto flex max-w-5xl flex-col gap-10 px-4 py-10">
+    <main class="mx-auto flex max-w-5xl flex-1 flex-col gap-10 px-4 py-10">
       <section class="flex flex-col gap-4">
         <h2 class="font-display text-xl text-slate-900 dark:text-slate-100">Prototype your avatar prompts</h2>
         <p class="text-slate-600 dark:text-slate-300">
@@ -61,8 +61,10 @@ import { CATEGORIES } from '@/lib/prompts/categories';
         </ul>
       </section>
     </main>
-    <footer class="border-t border-slate-200 bg-white py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
-      Built with ❤️ for secure creativity. <a href="/docs">Read the docs</a>.
+    <footer class="border-t border-slate-200 bg-white py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 w-full">
+      <div class="mx-auto max-w-5xl px-4">
+        Built with ❤️ for secure creativity. <a href="/docs">Read the docs</a>.
+      </div>
     </footer>
     <script type="module">
       import React from 'react';

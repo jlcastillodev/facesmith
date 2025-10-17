@@ -111,8 +111,38 @@ export const PromptTuner: FC<PromptTunerProps> = ({
     [generatedImages],
   );
 
+  const handleImageClick = useCallback(
+    (index: number) => {
+      const image = generatedImages[index];
+      if (image) {
+        setPreviewImage(image);
+      }
+    },
+    [generatedImages],
+  );
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr]">
+    <>
+      {/* Global blocking overlay during generation */}
+      {isGenerating && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4 rounded-lg bg-white p-6 shadow-xl dark:bg-slate-900">
+            <svg
+              className="h-12 w-12 animate-spin text-blue-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+            <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">Generating avatars...</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">This may take a few moments</p>
+          </div>
+        </div>
+      )}
+      
+      <div className="grid gap-6 lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr]">
       <section className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h2 className="font-display text-lg text-slate-900 dark:text-slate-100">Prompt designer</h2>
         <CategoryPicker categories={categories} value={categoryId} onChange={setCategoryId} />
@@ -123,9 +153,19 @@ export const PromptTuner: FC<PromptTunerProps> = ({
             onChange={(event) => setPromptInput(event.target.value)}
             rows={4}
             spellCheck="false"
-            className="min-h-[120px] rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-primary focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+            disabled={isGenerating}
+            className="min-h-[120px] rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-primary focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </label>
+        <button
+          type="button"
+          onClick={handleGenerate}
+          disabled={isGenerating}
+          aria-label="Generate a new batch of avatars"
+          className="w-full rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 hover:bg-blue-700 dark:focus-visible:ring-offset-slate-900"
+        >
+          {isGenerating ? 'Generating...' : 'Generate Avatars'}
+        </button>
         <p className="text-xs text-slate-500 dark:text-slate-400">
           Prompts are sanitized for IP safety. Any blocked references will be removed automatically before reaching an AI model.
         </p>
@@ -137,9 +177,6 @@ export const PromptTuner: FC<PromptTunerProps> = ({
           prompt={plan.safePrompt}
           category={plan.category}
           flaggedTerms={plan.flaggedTerms}
-          onGenerate={handleGenerate}
-          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
-          canDownload={phase === 'ready' && generatedImages.length > 0}
           loading={isGenerating}
           statusMessage={statusMessage}
         />
@@ -148,10 +185,11 @@ export const PromptTuner: FC<PromptTunerProps> = ({
             <GeneratedGrid
               images={generatedImages}
               onDownload={handleDownloadOne}
+              onImageClick={handleImageClick}
               showDownloads={phase === 'ready'}
             />
             {phase === 'ready' && (
-              <div className="flex justify-center">
+              <div className="flex justify-center gap-3">
                 <DownloadAll 
                   items={generatedImages.map((img, index) => ({
                     filename: `facesmith-${index + 1}.png`,
@@ -164,6 +202,7 @@ export const PromptTuner: FC<PromptTunerProps> = ({
         ) : null}
       </div>
     </div>
+    </>
   );
 };
 

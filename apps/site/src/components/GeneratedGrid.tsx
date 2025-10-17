@@ -3,10 +3,11 @@ import { type FC } from 'react';
 export interface GeneratedGridProps {
   images: string[];
   onDownload: (index: number) => void;
+  onImageClick?: (index: number) => void;
   showDownloads?: boolean;
 }
 
-export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, showDownloads = true }) => {
+export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, onImageClick, showDownloads = true }) => {
   if (images.length === 0) {
     return null;
   }
@@ -28,7 +29,10 @@ export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, show
               aria-label={`Generated avatar #${displayIndex}`}
               className="group relative overflow-hidden rounded-lg border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-slate-700 dark:focus-visible:ring-offset-slate-900"
             >
-              <div className="aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-800 cursor-pointer">
+              <div 
+                className="aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-800 cursor-pointer"
+                onClick={() => onImageClick?.(index)}
+              >
                 <img
                   src={image}
                   alt={`Generated avatar #${displayIndex}`}

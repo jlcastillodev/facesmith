@@ -33,6 +33,9 @@ facesmith/
 │     │     └─ tailwind.css
 │     ├─ __tests__/              # Jest tests
 │     │  ├─ ip-safety.test.ts
+│     │  ├─ download.test.ts
+│     │  ├─ generate.test.tsx
+│     │  ├─ generated-grid.test.tsx
 │     │  ├─ prompttuner.test.tsx
 │     │  └─ themetoggle.test.tsx
 │     ├─ astro.config.mjs
@@ -142,14 +145,17 @@ pnpm install
 pnpm dev        # http://localhost:4321
 pnpm build      # generates ./dist
 pnpm preview    # serves compiled site
-pnpm test       # runs Jest + Testing Library
+pnpm test       # runs default Node-based Jest unit tests (*.test.ts)
 ```
 
 From the monorepo root (using workspace filters):
 
 ```bash
 pnpm -F "*/site" dev
-pnpm -F "*/site" test
+pnpm --filter @facesmith/site test
+
+# Optional: run a specific UI test file manually (requires jsdom-capable setup)
+pnpm --filter @facesmith/site exec jest __tests__/prompttuner.test.tsx
 ```
 
 ---
@@ -302,7 +308,7 @@ Implemented for FaceSmith:
 | Variables not loading | Missing `.env.local` or `PUBLIC_` prefix | Check `.env` and restart `pnpm dev` |
 | 403 from Worker | CORS blocked | Add your domain to `ORIGIN_ALLOW` |
 | Images not showing | Missing files in `/public/` | Copy to `/apps/site/public/` |
-| Jest + TS errors | Monorepo config mismatch | Run from `apps/site` or use `pnpm -F "*/site" test` |
+| Jest + TS errors | Mixed Node/UI test environments | Use the default `pnpm --filter @facesmith/site test` path for CI-safe unit tests |
 
 ---
 
@@ -333,8 +339,8 @@ touch apps/site/__tests__/feature.test.ts
 # From the repo root
 pnpm install                 # install dependencies
 pnpm -r build                # build all packages
-pnpm -F "*/site" dev         # start the Astro server
-pnpm -F "*/site" test        # run tests
+pnpm --filter @facesmith/site dev   # start the Astro server
+pnpm --filter @facesmith/site test  # run CI-safe unit tests
 
 # Worker
 cd workers/proxy

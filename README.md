@@ -56,6 +56,11 @@ pnpm build
 pnpm dev:worker
 ```
 
+### Test scope in this repo
+
+- The default site Jest command (`pnpm --filter @facesmith/site test`) is intentionally configured to run stable Node-based unit suites (`apps/site/__tests__/*.test.ts`).
+- Component/UI specs (`*.test.tsx`) are kept in the repo for future jsdom-enabled pipelines, but they are not part of the default public CI path today.
+
 ## Node.js Version Management
 
 If you're using nvm, you can use the included `.nvmrc` file:
@@ -75,7 +80,7 @@ nvm use 18.17.0
 
 1. Configure the Worker by setting `AI_ACCOUNT_ID`, `AI_API_TOKEN`, and (optionally) `AI_MODEL` in `wrangler.toml`; default model is `@cf/black-forest-labs/flux-1-schnell` if omitted. Define `ORIGIN_ALLOW` as a comma-separated list of allowed origins and be sure to include `http://localhost:4321` for local development. Secrets such as `AI_API_TOKEN` should be stored with `wrangler secret put`.
 2. Deploy the proxy from `workers/proxy` using Wrangler (`pnpm --filter @facesmith/proxy-worker dev` for testing, `pnpm --filter @facesmith/proxy-worker deploy` to publish).
-3. Create `apps/site/.env.local` and set `PUBLIC_FACESMITH_API_URL="https://<your-worker-subdomain>/api"` pointing to the deployed Worker.
+3. Create `apps/site/.env.local` and set `PUBLIC_FACESMITH_API_URL="https://<your-worker-subdomain>"` pointing to the deployed Worker base URL (the frontend appends `/generate`).
 4. Run `pnpm --filter site dev` and generate avatars. If the env variable is present the site will call the Worker and render returned images; otherwise the placeholder generator remains in use for offline demos.
 
 ### Generate → Preview → Download flow
@@ -89,3 +94,13 @@ If generation fails, the placeholder image remains visible, the non-blocking toa
 ### Security notes
 
 Prompts are sanitized on the client before they reach the proxy. The Worker enforces CORS using `ORIGIN_ALLOW` and sets defensive headers; do not log prompts in production environments to preserve user privacy.
+
+## GitHub Pages deployment
+
+- The site is built as a static Astro app and deployed with `.github/workflows/pages.yml`.
+<<<<<<< ours
+=======
+- The Pages workflow is configured to run on pushes to either `main` or `master`, so it works regardless of which default branch your repository uses.
+>>>>>>> theirs
+- For repository pages (for example `https://<owner>.github.io/<repo>`), Astro now auto-detects the repository name in GitHub Actions and sets the proper `base` path so CSS/JS assets load correctly.
+- Ensure the repository setting **Pages → Source** is configured to **GitHub Actions**.

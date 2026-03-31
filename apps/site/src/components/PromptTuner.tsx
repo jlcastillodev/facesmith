@@ -5,7 +5,31 @@ import { downloadDataUrl } from '@/lib/download';
 import { CategoryPicker } from './CategoryPicker';
 import { AvatarCard } from './AvatarCard';
 import { GeneratedGrid } from './GeneratedGrid';
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 import { DownloadAll } from './DownloadAll';
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 
 export interface PromptTunerProps {
   categories?: PromptCategory[];
@@ -31,22 +55,134 @@ export const PromptTuner: FC<PromptTunerProps> = ({
   const [statusMessage, setStatusMessage] = useState('');
 
   const isGenerating = phase === 'generating';
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 
   // keep placeholder in sync when no successful batch exists
   useEffect(() => {
     if (phase === 'ready' || generatedImages.length > 0) {
       return;
     }
+<<<<<<< ours
 
     setPreviewImage(plan.placeholderImage);
     setStatusMessage('');
   }, [generatedImages.length, phase, plan.placeholderImage]);
 
+=======
+
+    setPreviewImage(plan.placeholderImage);
+    setStatusMessage('');
+  }, [generatedImages.length, phase, plan.placeholderImage]);
+
+>>>>>>> theirs
+=======
+=======
+>>>>>>> theirs
+
+=======
+
+>>>>>>> theirs
+=======
+
+>>>>>>> theirs
+=======
+
+>>>>>>> theirs
+=======
+
+>>>>>>> theirs
+=======
+
+>>>>>>> theirs
+  // keep placeholder in sync when no successful batch exists
+  useEffect(() => {
+    if (phase === 'ready' || generatedImages.length > 0) {
+      return;
+    }
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+
+    setPreviewImage(plan.placeholderImage);
+    setStatusMessage('');
+  }, [generatedImages.length, phase, plan.placeholderImage]);
+
+>>>>>>> theirs
+=======
+=======
+>>>>>>> theirs
+
+=======
+
+>>>>>>> theirs
+    setPreviewImage(plan.placeholderImage);
+    setStatusMessage('');
+  }, [generatedImages.length, phase, plan.placeholderImage]);
+
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+=======
+>>>>>>> theirs
+
+=======
+
+>>>>>>> theirs
+    setPreviewImage(plan.placeholderImage);
+    setStatusMessage('');
+  }, [generatedImages.length, phase, plan.placeholderImage]);
+
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   const handleGenerate = useCallback(async () => {
     setPhase('generating');
     setStatusMessage('Generating…');
     try {
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
       const result = await generateAvatars(plan, { count: 6, size: 512 });
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+      const result = await generateAvatars(plan, { count: 6 });
+>>>>>>> theirs
 
       if (result.usedProxy && result.images.length > 0) {
         setGeneratedImages(result.images);
@@ -87,6 +223,14 @@ export const PromptTuner: FC<PromptTunerProps> = ({
       return;
     }
 
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
     // Use the DownloadAll component's functionality for zip download
     const downloadItems = generatedImages.map((img, index) => ({
       filename: `facesmith-${index + 1}.png`,
@@ -94,6 +238,22 @@ export const PromptTuner: FC<PromptTunerProps> = ({
     }));
 
     // For now, download individual files (zip download will work via DownloadAll component)
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
     generatedImages.forEach((img, index) => {
       downloadDataUrl(img, `facesmith-${index + 1}.png`);
     });
@@ -111,6 +271,14 @@ export const PromptTuner: FC<PromptTunerProps> = ({
     [generatedImages],
   );
 
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
   const handleImageClick = useCallback(
     (index: number) => {
       const image = generatedImages[index];
@@ -121,6 +289,22 @@ export const PromptTuner: FC<PromptTunerProps> = ({
     [generatedImages],
   );
 
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   return (
     <>
       {/* Global blocking overlay during generation */}
@@ -177,10 +361,66 @@ export const PromptTuner: FC<PromptTunerProps> = ({
           prompt={plan.safePrompt}
           category={plan.category}
           flaggedTerms={plan.flaggedTerms}
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+=======
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+>>>>>>> theirs
+=======
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+>>>>>>> theirs
+=======
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+>>>>>>> theirs
+=======
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+>>>>>>> theirs
+=======
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+>>>>>>> theirs
+=======
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+>>>>>>> theirs
+=======
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+>>>>>>> theirs
+=======
+          onGenerate={handleGenerate}
+          onDownloadAll={phase === 'ready' && generatedImages.length > 0 ? handleDownloadAll : undefined}
+          canDownload={phase === 'ready' && generatedImages.length > 0}
+>>>>>>> theirs
           loading={isGenerating}
           statusMessage={statusMessage}
         />
         {generatedImages.length > 0 ? (
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
           <>
             <GeneratedGrid
               images={generatedImages}
@@ -199,6 +439,48 @@ export const PromptTuner: FC<PromptTunerProps> = ({
               </div>
             )}
           </>
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+          <GeneratedGrid
+            images={generatedImages}
+            onDownload={handleDownloadOne}
+            showDownloads={phase === 'ready'}
+          />
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
         ) : null}
       </div>
     </div>

@@ -13,8 +13,13 @@ jest.mock('file-saver', () => ({
 
 describe('downloadDataUrl', () => {
   const originalFetch = global.fetch;
+  const originalWindow = global.window;
 
   beforeEach(() => {
+    Object.defineProperty(global, 'window', {
+      value: {},
+      configurable: true,
+    });
     global.fetch = jest.fn().mockResolvedValue({
       blob: jest.fn().mockResolvedValue(new Blob()),
     }) as unknown as typeof fetch;
@@ -25,6 +30,10 @@ describe('downloadDataUrl', () => {
   });
 
   afterAll(() => {
+    Object.defineProperty(global, 'window', {
+      value: originalWindow,
+      configurable: true,
+    });
     if (originalFetch) {
       global.fetch = originalFetch;
     }

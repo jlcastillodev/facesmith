@@ -1,18 +1,49 @@
 const config: import('jest').Config = {
   preset: 'ts-jest',
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
   testEnvironment: 'jsdom',
+=======
+  testEnvironment: 'node',
+>>>>>>> theirs
+=======
+  testEnvironment: 'node',
+>>>>>>> theirs
+=======
+  testEnvironment: 'node',
+>>>>>>> theirs
+=======
+  testEnvironment: 'node',
+>>>>>>> theirs
+=======
+  testEnvironment: 'node',
+>>>>>>> theirs
+=======
+  testEnvironment: 'node',
+>>>>>>> theirs
+=======
+  testEnvironment: 'node',
+>>>>>>> theirs
+=======
+  testEnvironment: 'node',
+>>>>>>> theirs
   roots: ['<rootDir>/__tests__'],
-  extensionsToTreatAsEsm: ['.ts', '.tsx'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  testMatch: ['<rootDir>/__tests__/**/*.test.ts'],
+  extensionsToTreatAsEsm: ['.ts'],
+  moduleFileExtensions: ['ts', 'js'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@facesmith/core$': '<rootDir>/../../packages/core/src/index.ts',
     '^@core/(.*)$': '<rootDir>/../../packages/core/src/$1',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
-  setupFilesAfterEnv: ['@testing-library/jest-dom'],
   collectCoverageFrom: [
-    'src/components/**/*.{ts,tsx}',
     'src/lib/**/*.{ts,tsx}'
   ],
   coverageDirectory: '<rootDir>/coverage',

@@ -14,12 +14,13 @@ import { CATEGORIES } from '@/lib/prompts/categories';
       name="description"
       content="Open-source, IP-safe avatar generator starter with Astro, Tailwind, and TypeScript."
     />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script is:inline>
       (() => {
         try {
+          // Only apply stored theme, not system preference initially to avoid hydration mismatch
           const storedTheme = localStorage.getItem('facesmith.theme');
-          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const theme = storedTheme === 'dark' || (!storedTheme && prefersDark) ? 'dark' : 'light';
+          const theme = storedTheme === 'dark' ? 'dark' : 'light';
           document.documentElement.dataset.theme = theme;
           document.body?.setAttribute('data-theme', theme);
           document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -67,7 +68,7 @@ import { CATEGORIES } from '@/lib/prompts/categories';
       </div>
     </footer>
     <script type="module">
-      import React from 'react';
+      import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
       import DownloadAll from '../components/DownloadAll.tsx';
       import { downloadDataUrl } from '../lib/download.ts';
@@ -100,7 +101,7 @@ import { CATEGORIES } from '@/lib/prompts/categories';
           bulkRoot = createRoot(bulkContainer);
         }
 
-        bulkRoot.render(React.createElement(DownloadAll, { items: globalWindow.__zipItems }));
+        bulkRoot.render(createElement(DownloadAll, { items: globalWindow.__zipItems }));
       };
 
       const showToast = (message) => {

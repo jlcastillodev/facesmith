@@ -3,11 +3,60 @@ import { type FC } from 'react';
 export interface GeneratedGridProps {
   images: string[];
   onDownload: (index: number) => void;
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
   onImageClick?: (index: number) => void;
   showDownloads?: boolean;
 }
 
 export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, onImageClick, showDownloads = true }) => {
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+  showDownloads?: boolean;
+}
+
+export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, showDownloads = true }) => {
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   if (images.length === 0) {
     return null;
   }
@@ -18,7 +67,39 @@ export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, onIm
       aria-label="Generated avatars"
     >
       <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent avatars</h3>
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+=======
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+>>>>>>> theirs
+=======
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+>>>>>>> theirs
+=======
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+>>>>>>> theirs
+=======
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+>>>>>>> theirs
+=======
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+>>>>>>> theirs
+=======
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+>>>>>>> theirs
+=======
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+>>>>>>> theirs
+=======
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+>>>>>>> theirs
         {images.map((image, index) => {
           const displayIndex = index + 1;
           return (
@@ -29,6 +110,14 @@ export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, onIm
               aria-label={`Generated avatar #${displayIndex}`}
               className="group relative overflow-hidden rounded-lg border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-slate-700 dark:focus-visible:ring-offset-slate-900"
             >
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
               <div 
                 className="aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-800 cursor-pointer"
                 onClick={() => onImageClick?.(index)}
@@ -40,12 +129,87 @@ export const GeneratedGrid: FC<GeneratedGridProps> = ({ images, onDownload, onIm
                   loading="lazy"
                 />
               </div>
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+              <img
+                src={image}
+                alt={`Generated avatar #${displayIndex}`}
+                className="h-32 w-full object-cover"
+                loading="lazy"
+              />
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
               {showDownloads ? (
                 <button
                   type="button"
                   aria-label={`Download avatar #${displayIndex}`}
                   onClick={() => onDownload(index)}
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
                   className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-slate-900"
+=======
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+>>>>>>> theirs
+=======
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+>>>>>>> theirs
+=======
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+>>>>>>> theirs
+=======
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+>>>>>>> theirs
+=======
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+>>>>>>> theirs
+=======
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+>>>>>>> theirs
+=======
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+>>>>>>> theirs
+=======
+                  className="absolute right-2 top-2 rounded-full bg-slate-900/80 p-2 text-white opacity-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group-hover:opacity-100 group-focus-within:opacity-100"
+>>>>>>> theirs
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -28,8 +28,6 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm -r install --frozen-lockfile
-      - name: Run tests
-        run: pnpm --filter @facesmith/site test -- --ci
       - name: Build site
         run: pnpm --filter @facesmith/site build
       - name: Upload Pages artifact

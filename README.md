@@ -98,9 +98,6 @@ Prompts are sanitized on the client before they reach the proxy. The Worker enfo
 ## GitHub Pages deployment
 
 - The site is built as a static Astro app and deployed with `.github/workflows/pages.yml`.
-<<<<<<< ours
-=======
 - The Pages workflow is configured to run on pushes to either `main` or `master`, so it works regardless of which default branch your repository uses.
->>>>>>> theirs
 - For repository pages (for example `https://<owner>.github.io/<repo>`), Astro now auto-detects the repository name in GitHub Actions and sets the proper `base` path so CSS/JS assets load correctly.
 - Ensure the repository setting **Pages → Source** is configured to **GitHub Actions**.

@@ -4,37 +4,5 @@
     "jsx": "react-jsx",
     "moduleResolution": "bundler"
   },
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
-=======
-  "include": []
->>>>>>> theirs
-=======
-  "include": []
->>>>>>> theirs
-=======
-  "include": []
->>>>>>> theirs
-=======
-  "include": []
->>>>>>> theirs
-=======
-  "include": []
->>>>>>> theirs
-=======
-  "include": []
->>>>>>> theirs
-=======
-  "include": []
->>>>>>> theirs
-=======
-  "include": []
->>>>>>> theirs
 }

@@ -1,15 +1,11 @@
 name = "facesmith-proxy"
 main = "src/index.ts"
-compatibility_date = "2024-06-05"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
 
-[vars]
-AI_PROVIDER = "cloudflare"
-AI_ACCOUNT_ID = "<your-account-id>"
-AI_MODEL = "@cf/black-forest-labs/flux-1-schnell"
-ORIGIN_ALLOW = "http://localhost:4321"
+# Your Cloudflare Account ID
+account_id = "2f27601fbd11a88f8cf984da107b332a"
 
-[env.production]
-vars = { AI_PROVIDER = "cloudflare" }
-
-# Secrets
-# AI_TOKEN is defined via `wrangler secret put AI_TOKEN`
+# AI binding for Cloudflare AI
+[ai]
+binding = "AI"

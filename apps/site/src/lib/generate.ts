@@ -10,6 +10,7 @@ export interface GenerationPlan {
 
 export interface AvatarGenerationOptions {
   count?: number;
+  size?: number; // 256 | 512 | 1024 (default 512)
 }
 
 export interface AvatarGenerationResult {
@@ -18,7 +19,7 @@ export interface AvatarGenerationResult {
 }
 
 const DEFAULT_IMAGE_COUNT = 6;
-const MAX_PROXY_COUNT = 8;
+const MAX_IMAGE_COUNT = 8; // Maximum images we can generate
 
 const normaliseApiUrl = (value: string): string => value.replace(/\/+$/, '');
 
@@ -40,6 +41,10 @@ const normaliseImages = (payload: unknown): string[] => {
         ? entry
         : `data:image/png;base64,${entry.replace(/^data:[^,]+,/, '')}`,
     );
+};
+
+export const __testing = {
+  normaliseImages,
 };
 
 const createPlaceholderBatch = (plan: GenerationPlan, count: number): string[] =>
@@ -99,71 +104,73 @@ export const generateAvatars = async (
   options: AvatarGenerationOptions = {},
 ): Promise<AvatarGenerationResult> => {
   const requestedCount = Math.floor(options.count ?? DEFAULT_IMAGE_COUNT);
-  const count = Math.max(1, Math.min(MAX_PROXY_COUNT, requestedCount));
+  const count = Math.max(1, Math.min(MAX_IMAGE_COUNT, requestedCount)); // Clamp between 1 and 8
   const placeholders = createPlaceholderBatch(plan, count);
   const apiUrl = getConfiguredApiUrl();
+  const size = options.size === 256 || options.size === 1024 ? options.size : 512;
+
+
+  console.log('🎯 generateAvatars: Starting with config', { requestedCount, count, apiUrl });
 
   if (!apiUrl) {
+    console.log('❌ generateAvatars: No API URL configured, using placeholders');
     return { images: placeholders, usedProxy: false };
   }
 
   try {
+    console.log('📡 generateAvatars: Making request to API');
     const response = await fetch(`${normaliseApiUrl(apiUrl)}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'omit',
-      body: JSON.stringify({ prompt: plan.safePrompt, n: count }),
+      body: JSON.stringify({ prompt: plan.safePrompt, n: count, size }),
+    });
+
+    console.log('📨 generateAvatars: Response received', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries()),
     });
 
     if (!response.ok) {
-      showFallbackToast();
-      return { images: placeholders, usedProxy: false };
+      const errorText = await response.text();
+      console.error('❌ generateAvatars: API request failed', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+      });
+      
+      // For debugging, let's not fallback to placeholders
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
     }
 
     const payload = await response.json();
+    console.log('📦 generateAvatars: Parsed response payload', payload);
+    
     const images = normaliseImages(payload);
+    console.log('🖼️ generateAvatars: Normalized images', { count: images.length });
 
     if (!images.length) {
-      showFallbackToast();
-      return { images: placeholders, usedProxy: false };
+      console.error('❌ generateAvatars: No valid images in response');
+      throw new Error('No valid images in API response');
     }
 
+    console.log('✅ generateAvatars: Success!', { imageCount: images.length });
     return { images, usedProxy: true };
   } catch (error) {
-    showFallbackToast();
-    return { images: placeholders, usedProxy: false };
+    console.error('💥 generateAvatars: Error occurred', error);
+    
+    // For debugging, re-throw the error instead of falling back
+    throw error;
   }
 };
 
-const escapeXml = (value: string): string =>
-  value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-
 const createPlaceholderImage = (prompt: string, category: PromptCategory): string => {
-  const title = escapeXml(`FaceSmith avatar: ${category.label}`);
-  const truncatedPrompt = prompt.length > 80 ? `${prompt.slice(0, 77)}…` : prompt;
-  const subtitle = escapeXml(truncatedPrompt);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-    <title id="title">${title}</title>
-    <desc id="desc">Placeholder avatar preview</desc>
-    <defs>
-      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#6366f1" />
-        <stop offset="100%" stop-color="#14b8a6" />
-      </linearGradient>
-    </defs>
-    <rect width="512" height="512" rx="48" fill="url(#bg)" />
-    <circle cx="256" cy="200" r="104" fill="rgba(15, 23, 42, 0.85)" />
-    <path d="M128 420c32-72 108-108 128-108s96 36 128 108" fill="rgba(15, 23, 42, 0.6)" />
-    <text x="50%" y="72%" font-family="'Inter',sans-serif" font-size="28" fill="#f8fafc" text-anchor="middle">${subtitle}</text>
-  </svg>`;
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  // Return path to static placeholder image in public folder
+  // You can replace 'avatar-placeholder.svg' with your app logo
+  return '/facesmithLogo.png';
 };
 
 export const buildGenerationPlan = (rawPrompt: string, categoryId: string): GenerationPlan => {

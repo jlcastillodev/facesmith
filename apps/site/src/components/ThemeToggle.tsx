@@ -4,56 +4,64 @@ type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'facesmith.theme';
 
-const getPreferredTheme = (): Theme => {
-  if (typeof window === 'undefined') {
-    return 'light';
-  }
-
-  const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
-  if (stored === 'light' || stored === 'dark') {
-    return stored;
-  }
-
-  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-  return prefersDark ? 'dark' : 'light';
-};
-
-const applyTheme = (theme: Theme) => {
-  if (typeof document === 'undefined') {
-    return;
-  }
-
-  document.documentElement.dataset.theme = theme;
-  document.body.dataset.theme = theme;
-  document.documentElement.classList.toggle('dark', theme === 'dark');
-  document.body.classList.toggle('dark', theme === 'dark');
-};
-
 export const ThemeToggle = () => {
-  const [theme, setTheme] = useState<Theme>(() => getPreferredTheme());
+  // Always start with light theme to avoid hydration mismatch
+  const [theme, setTheme] = useState<Theme>('light');
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    applyTheme(theme);
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(STORAGE_KEY, theme);
-    }
-  }, [theme]);
+    // After hydration, get the actual preferred theme
+    const getPreferredTheme = (): Theme => {
+      const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+
+      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      return prefersDark ? 'dark' : 'light';
+    };
+
+    const actualTheme = getPreferredTheme();
+    setTheme(actualTheme);
+    setIsHydrated(true);
+
+    // Apply theme immediately after hydration
+    document.documentElement.dataset.theme = actualTheme;
+    document.body.dataset.theme = actualTheme;
+    document.documentElement.classList.toggle('dark', actualTheme === 'dark');
+    document.body.classList.toggle('dark', actualTheme === 'dark');
+  }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) {
-      return;
-    }
+    if (!isHydrated) return;
+
+    // Apply theme changes after hydration
+    document.documentElement.dataset.theme = theme;
+    document.body.dataset.theme = theme;
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.body.classList.toggle('dark', theme === 'dark');
+    
+    window.localStorage.setItem(STORAGE_KEY, theme);
+  }, [theme, isHydrated]);
+
+  useEffect(() => {
+    if (!isHydrated || !window.matchMedia) return;
 
     const media = window.matchMedia('(prefers-color-scheme: dark)');
     const listener = (event: MediaQueryListEvent) => {
-      setTheme(event.matches ? 'dark' : 'light');
+      // Only update if no stored preference exists
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (!stored) {
+        setTheme(event.matches ? 'dark' : 'light');
+      }
     };
     media.addEventListener('change', listener);
     return () => media.removeEventListener('change', listener);
-  }, []);
+  }, [isHydrated]);
 
   const toggleTheme = () => setTheme((current) => (current === 'dark' ? 'light' : 'dark'));
 
+  // Always use consistent labels to avoid hydration mismatch
   const label = theme === 'dark' ? 'Activate light mode' : 'Activate dark mode';
 
   return (

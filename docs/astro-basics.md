@@ -20,7 +20,8 @@ facesmith/
 │     │  │  ├─ ThemeToggle.tsx
 │     │  │  ├─ CategoryPicker.tsx
 │     │  │  ├─ PromptTuner.tsx
-│     │  │  └─ AvatarCard.tsx
+│     │  │  ├─ AvatarCard.tsx
+│     │  │  └─ GeneratedGrid.tsx
 │     │  ├─ lib/
 │     │  │  ├─ safety/
 │     │  │  │  └─ ip-safety.ts
@@ -32,6 +33,9 @@ facesmith/
 │     │     └─ tailwind.css
 │     ├─ __tests__/              # Jest tests
 │     │  ├─ ip-safety.test.ts
+│     │  ├─ download.test.ts
+│     │  ├─ generate.test.tsx
+│     │  ├─ generated-grid.test.tsx
 │     │  ├─ prompttuner.test.tsx
 │     │  └─ themetoggle.test.tsx
 │     ├─ astro.config.mjs
@@ -141,19 +145,34 @@ pnpm install
 pnpm dev        # http://localhost:4321
 pnpm build      # generates ./dist
 pnpm preview    # serves compiled site
-pnpm test       # runs Jest + Testing Library
+pnpm test       # runs default Node-based Jest unit tests (*.test.ts)
 ```
 
 From the monorepo root (using workspace filters):
 
 ```bash
 pnpm -F "*/site" dev
-pnpm -F "*/site" test
+pnpm --filter @facesmith/site test
+
+# Optional: run a specific UI test file manually (requires jsdom-capable setup)
+pnpm --filter @facesmith/site exec jest __tests__/prompttuner.test.tsx
 ```
 
 ---
 
-## 5) Pages & routing (Astro)
+## 5) Avatar generation UX (Generate → Preview → Download)
+
+The preview experience in FaceSmith follows an accessible two-step flow:
+
+1. **Generate** — triggers the Cloudflare Worker proxy via `generateAvatars(plan, { count: 6 })`. While pending the preview card shows a loading spinner, the surrounding region is marked `aria-busy="true"`, and controls are disabled.
+2. **Preview** — on success the first returned data URL populates the main preview image, and the gallery renders every image in the batch as keyboard-focusable thumbnails announced as “Generated avatar #N”. A polite live region informs screen readers (e.g. “6 images generated.”).
+3. **Download** — bulk and per-image download buttons appear only after a successful batch. They call `downloadDataUrl` with the generated data URLs, never the placeholder assets.
+
+Failures keep the placeholder preview, hide download controls, and surface the existing non-blocking toast. The preview from the last successful batch remains visible until a new batch completes.
+
+---
+
+## 6) Pages & routing (Astro)
 
 Each `.astro` file inside `src/pages/` becomes a route.
 
@@ -180,7 +199,7 @@ const title = "Hello Astro";
 
 ---
 
-## 6) Using React in Astro
+## 7) Using React in Astro
 
 You can include React components (`.tsx`) in Astro and control when to hydrate them:
 
@@ -199,7 +218,7 @@ import ThemeToggle from "../components/ThemeToggle.tsx";
 
 ---
 
-## 7) Styling (Tailwind)
+## 8) Styling (Tailwind)
 
 Configuration:
 - Entry file: `src/styles/tailwind.css`
@@ -223,7 +242,7 @@ export default {
 
 ---
 
-## 8) AI proxy (Cloudflare Worker)
+## 9) AI proxy (Cloudflare Worker)
 
 The Worker acts as a secure proxy for the Cloudflare AI API.  
 It exposes a `POST /generate` endpoint.
@@ -270,7 +289,7 @@ curl -X POST "https://facesmith-proxy.<your-subdomain>.workers.dev/generate" \
 
 ---
 
-## 9) Security posture
+## 10) Security posture
 
 Implemented for FaceSmith:
 
@@ -282,18 +301,18 @@ Implemented for FaceSmith:
 
 ---
 
-## 10) Debugging tips
+## 11) Debugging tips
 
 | Problem | Likely cause | Solution |
 |----------|--------------|-----------|
 | Variables not loading | Missing `.env.local` or `PUBLIC_` prefix | Check `.env` and restart `pnpm dev` |
 | 403 from Worker | CORS blocked | Add your domain to `ORIGIN_ALLOW` |
 | Images not showing | Missing files in `/public/` | Copy to `/apps/site/public/` |
-| Jest + TS errors | Monorepo config mismatch | Run from `apps/site` or use `pnpm -F "*/site" test` |
+| Jest + TS errors | Mixed Node/UI test environments | Use the default `pnpm --filter @facesmith/site test` path for CI-safe unit tests |
 
 ---
 
-## 11) Common tasks
+## 12) Common tasks
 
 ```bash
 # Create a new page
@@ -320,8 +339,8 @@ touch apps/site/__tests__/feature.test.ts
 # From the repo root
 pnpm install                 # install dependencies
 pnpm -r build                # build all packages
-pnpm -F "*/site" dev         # start the Astro server
-pnpm -F "*/site" test        # run tests
+pnpm --filter @facesmith/site dev   # start the Astro server
+pnpm --filter @facesmith/site test  # run CI-safe unit tests
 
 # Worker
 cd workers/proxy

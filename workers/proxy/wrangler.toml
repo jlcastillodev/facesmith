@@ -1,0 +1,11 @@
+name = "facesmith-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Your Cloudflare Account ID
+account_id = "2f27601fbd11a88f8cf984da107b332a"
+
+# AI binding for Cloudflare AI
+[ai]
+binding = "AI"

@@ -1,0 +1,22 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 error pnpm": {
+    "code": "ERR_PNPM_UNSUPPORTED_ENGINE",
+    "packageId": "/Users/joseluis/facesmith/apps/site",
+    "wanted": {
+      "pnpm": ">=8"
+    },
+    "current": {
+      "node": "v24.9.0",
+      "pnpm": "6.11.0"
+    },
+    "err": {
+      "name": "Error",
+      "message": "Unsupported engine for /Users/joseluis/facesmith/apps/site: wanted: {\"pnpm\":\">=8\"} (current: {\"node\":\"v24.9.0\",\"pnpm\":\"6.11.0\"})",
+      "code": "ERR_PNPM_UNSUPPORTED_ENGINE",
+      "stack": "Error: Unsupported engine for /Users/joseluis/facesmith/apps/site: wanted: {\"pnpm\":\">=8\"} (current: {\"node\":\"v24.9.0\",\"pnpm\":\"6.11.0\"})\n    at Object.checkEngine [as default] (/Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:35213:16)\n    at Object.checkPackage (/Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:35357:99)\n    at Object.packageIsInstallable (/Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:35381:44)\n    at Object.tryReadProjectManifest (/Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:40515:30)\n    at async Object.handler [as default] (/Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:116103:48)\n    at async /Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:125614:20\n    at async run (/Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:125589:34)\n    at async runPnpm (/Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:125799:5)\n    at async /Users/joseluis/.node/corepack/pnpm/6.11.0/dist/pnpm.cjs:125791:7"
+    }
+  }
+}

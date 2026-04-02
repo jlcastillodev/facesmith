@@ -32,6 +32,9 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build site
         run: pnpm --filter @facesmith/site build
+        env:
+          PUBLIC_FACESMITH_API_URL: ${{ vars.PUBLIC_FACESMITH_API_URL }}
+          CLOUDFLARE_AI_MODEL: ${{ vars.CLOUDFLARE_AI_MODEL }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
